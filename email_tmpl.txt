@@ -1,11 +1,11 @@
-Ola, %(nome)s
+"Ola, {nome}s
 
-Tem interesse em comprar %(produto)s
+Tem interesse em comprar {produto}s
 
-Este produto e otimo para resolver %(texto)s
+Este produto e otimo para resolver {texto}s
 
-Clique agora em %(link)s
+Clique agora em {link}s
 
-Apenas %(quantidade)s disponiveis
+Apenas {quantidade}s disponiveis
 
-Preço promocional %(preco)
+Preço promocional {preco}".format(nome,produto, texto, link, quantidade,preco)

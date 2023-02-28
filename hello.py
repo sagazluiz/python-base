@@ -21,17 +21,37 @@ __license__= "Unlicensed"
 
 import os
 import sys
+import logging
 
+log_level = os.getenv("LOG_LEVEL", "WARNING").upper()
+log = logging.Logger("luiz", log_level) # main -- programa principal
+ch = logging.StreamHandler()    # heandlers -- indicacao do caminho para salvar 
+ch.setLevel(log_level)
+fmt = logging.Formatter(
+    '%(asctime)s %(name)s %(levelname)s' 
+    'l:%(lineno)d f:%(filename)s: %(message)s'
+    )
+ch.setFormatter(fmt)
+log.addHandler(ch)
 
 arguments = {"lang": None,"count":1}
 
 for arg in sys.argv[1:]:
-    key, value = arg.split("=")
+    # TODO: Tratar ValueError
+    try:
+        key, value = arg.split("=")
+    except ValueError as e:
+        log.error(
+        "You need to use `=``, you passed %s, try --key=value: %s,", arg, str(e) 
+        )
+        sys.exit(1)
+        
     key = key.lstrip("-").strip()
     value= value.strip()
     if key not in arguments:
-        print(f"Invalid Option '{key}'")
+        print(f"Invalid Option `{key}`")
         sys.exit()
+        
     arguments[key] = value
 
 # Dunder
@@ -45,7 +65,7 @@ if current_language is None:
         current_language = input("Choose a language:")
         
 current_language = current_language[:5]
-
+print(f"{current_language=}")
 msg = {
 "en_US": "Hello, World!",
 "pt_BR": "Olá!",
@@ -55,5 +75,17 @@ msg = {
 }
 
 # O(1)
+"""
+try:
+    message = msg[current_language]
+except KeyError as e:
+    print(f"[ERROR] {str(e)}")
+    print(f"Language is invalid, choose from: {list(msg.keys())}")
+    sys.exit(1)        
+"""
 
-print(msg[current_language] * int(arguments["count"]))
+message = msg.get(current_language, msg["en_US"])
+
+print(
+    message * int(arguments["count"])
+)

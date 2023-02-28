@@ -47,8 +47,14 @@ elif len(arguments) != 3:
 	print("soma 5 5")
 	sys.exit(1)	
 
-operation, *nums = arguments
-
+try:
+    operation, *nums = arguments
+except Exception as e:
+    print(str(e))
+    print("Número de argumentos inválidos")
+    print("ex: `sum 5 5`")
+    sys.exit(1)
+    
 valid_operations = ("sum", "sub", "mul", "div")
 if operation not in valid_operations:
 	print("Operação inválida")
@@ -66,7 +72,11 @@ for num in nums:
 		num = int(num)
 	validated_nums.append(num)
 
-n1, n2 = validated_nums
+try:
+    n1, n2 = validated_nums
+except ValueError as e:
+    print(str(e))
+    sys.exit(1)
 
 if operation =="sum":
 	result = n1 + n2
@@ -77,13 +87,20 @@ elif operation == "mul":
 elif operation == "div":
 	result = n1 / n2
 
-path = os.curdir
+path = "/"
 filepath = os.path.join(path, "infixcalc.log")
 timestamp = datetime.now().isoformat()
 user = os.getenv('USER', 'anonymous')
 
-with open(filepath, "a") as file_:
-    file_.write(f"{timestamp} - {user} -  {operation}, {n1}, {n2} = {result}\n")
 print(f"O resultado é {result}")
+
+
+try: 
+    with open(filepath, "a") as file_:
+    file_.write(f"{timestamp} - {user} -  {operation}, {n1}, {n2} = {result}\n")
+except PermissionError as e:
+# TODO: logging
+    print(str(e))
+    sys.exit(1)
 
 

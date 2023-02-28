@@ -1,29 +1,32 @@
 #!/usr/bin/env python3
 import os
 import logging
+from logging import handlers
 
 # BOILERPLATE
 # TODO: usar funcao
 # TODO: usar lib (loguru)
 
 log_level = os.getenv("LOG_LEVEL", "WARNING").upper()
-
-# nossa instancia
 log = logging.Logger("luiz", log_level) # main -- programa principal
-
-# level
-ch = logging.StreamHandler()    # heandlers -- indicacao do caminho para salvar 
-ch.setLevel(log_level)
-
-# formatacao
+#ch = logging.StreamHandler()   # Console / terminal # heandlers -- indicacao do caminho para salvar 
+#ch.setLevel(log_level)
+fh = handlers.RotatingFileHandler(
+    "meulog.log",
+     maxBytes=100, # 10**6 
+     backupCount=10,
+     )
+fh.setLevel(log_level)
 fmt = logging.Formatter(
     '%(asctime)s %(name)s %(levelname)s' 
     'l:%(lineno)d f:%(filename)s: %(message)s'
     )
-ch.setFormatter(fmt)
+#ch.setFormatter(fmt)
+fh.setFormatter(fmt)
 
 # destino
-log.addHandler(ch)
+#log.addHandler(ch)
+log.addHandler(fh)
 
 """
 log.debug("Mensagem para o Dev, qe, sysadmin")

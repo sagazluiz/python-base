@@ -6,9 +6,6 @@ NAO MANDE SPAM!!!
 
 __version__ = "0.1.0"
 
-email_tmpl = """
-f
-"""
 import sys
 import os
 
