@@ -1,28 +1,32 @@
 #!/usr/bin/env python3
-import os
 import sys
+import time
+import logging
+
+log = logging.Logger("errors")
 
 # EAFP - Easy to ASK Forgiveness than Permission
+# (É mais fácil pedir perdão do que pedir pemissão)
 
-try:
-    raise RuntimeError("An error ocurred duing the execution time")
+def try_to_open_a_file(filepath, retry=1) -> list:
+    """Tries to open a file, if error, retries n times"""
+    if retry > 999:
+        raise ValueError("Retry cannot be above 999")
+        
+    try:
+        return open(filepath).readlines() # FileNotFoundError
+    except FileNotFoundError as e:
+        log.error("ERRO: %s", e)
+        time.sleep(2)
+        if retry >1:
+            #recursão
+            return try_to_open_a_file(filepath, retry=retry -1)
+    else:
+        print("Sucesso!!!")
+    finally:
+        print("Execute isso semprte!")
 
-try:
-    names = open("names.txt").readlines() # FileNotFoundError
-    1 / 1 # ZeroDivisionError
-    print(names.append) # AttributeError
-except FileNotFoundError as e: # Bare Except
-    print(f"[Error] {str(e)}")
-    sys.exit(1)
-    # retry -- pode ser feito com função recursiva ou while
-except ZeroDivisionError:
-    print("You can not divide per zero")
-    sys.exit(1)
-except AttributeError:
-    print("List does not has banana")
-    sys.exit(1)    
-try: 
-    print(names[2])
-except:
-    print("[Error] Missing name in the list")
-    sys.exit(1)
+    return []
+
+for line in try_to_open_a_file("names.txt", retry=5):
+    print(line)
